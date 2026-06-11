@@ -51,6 +51,7 @@ class ProcurementOrder {
   OrderApprovalStatus status;
 
   ProcurementOrder({
+    required this.currency,
     required this.orderNo,
     required this.companyCode,
     required this.supplier,
@@ -70,6 +71,7 @@ class ProcurementOrder {
     List<OrderLine>? lines,
   }) {
     return ProcurementOrder(
+      currency: currency,
       orderNo: orderNo,
       companyCode: companyCode,
       supplier: supplier,

@@ -36,21 +36,21 @@ class _LoginScreenState extends State<LoginScreen> {
             Stack(
               children: [
                 CustomPaint(
-                  size: const Size(double.infinity, 240),
+                  size: const Size(double.infinity, 300),
                   painter: CurvedHeaderPainter(),
                 ),
                 Positioned(
-                  top: 54,
-                  right: 16,
-                  child: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white, size: 24),
-                    onPressed: () {},
-                  ),
-                )
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                  child: Image.asset("assets/images/logo.png",
+                      width: 100, height: 100),
+                ),
               ],
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -89,8 +89,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: _usernameController,
                         decoration: InputDecoration(
                           hintText: "Enter your user name",
-                          hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-                          prefixIcon: const Icon(Icons.person_outline, color: Color(0xFF64748B)),
+                          hintStyle:
+                              const TextStyle(color: Colors.grey, fontSize: 14),
+                          prefixIcon: const Icon(Icons.person_outline,
+                              color: Color(0xFF64748B)),
                           filled: true,
                           fillColor: const Color(0xFFF6F8FB),
                           border: OutlineInputBorder(
@@ -99,11 +101,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFE2E8F0)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFF021733)),
+                            borderSide:
+                                const BorderSide(color: Color(0xFF021733)),
                           ),
                         ),
                       ),
@@ -129,14 +133,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         obscureText: _isPasswordHidden,
                         decoration: InputDecoration(
                           hintText: "Enter your password",
-                          hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-                          prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF64748B)),
+                          hintStyle:
+                              const TextStyle(color: Colors.grey, fontSize: 14),
+                          prefixIcon: const Icon(Icons.lock_outline,
+                              color: Color(0xFF64748B)),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _isPasswordHidden ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                              _isPasswordHidden
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
                               color: const Color(0xFF64748B),
                             ),
-                            onPressed: () => setState(() => _isPasswordHidden = !_isPasswordHidden),
+                            onPressed: () => setState(
+                                () => _isPasswordHidden = !_isPasswordHidden),
                           ),
                           filled: true,
                           fillColor: const Color(0xFFF6F8FB),
@@ -146,11 +155,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFE2E8F0)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFF021733)),
+                            borderSide:
+                                const BorderSide(color: Color(0xFF021733)),
                           ),
                         ),
                       ),
@@ -165,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: ElevatedButton(
                       onPressed: _handleLogin,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF021733),
+                        backgroundColor: const Color(0xFF002147),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -173,7 +184,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: const Text(
                         "Login",
-                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -186,7 +200,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       Expanded(child: Divider(color: Color(0xFFE2E8F0))),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Text("OR", style: TextStyle(color: Color(0xFF64748B), fontSize: 13, fontWeight: FontWeight.bold)),
+                        child: Text("OR",
+                            style: TextStyle(
+                                color: Color(0xFF64748B),
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold)),
                       ),
                       Expanded(child: Divider(color: Color(0xFFE2E8F0))),
                     ],
@@ -214,7 +232,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.check_circle, color: Color(0xFF1CB55C), size: 16),
+                      Icon(Icons.check_circle,
+                          color: Color(0xFF1CB55C), size: 16),
                       SizedBox(width: 8),
                       Text(
                         "Secure • Fast • Reliable",
@@ -247,7 +266,8 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: onPress,
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: Color(0xFFE2E8F0)),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -272,22 +292,19 @@ class _LoginScreenState extends State<LoginScreen> {
 class CurvedHeaderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
-      ..shader = const LinearGradient(
-        colors: [Color(0xFF021733), Color(0xFF03224B)],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ).createShader(Offset.zero & size);
+    const curveHeight = 40.0;
+    final baseY = size.height - curveHeight;
 
-    final Path path = Path()
-      ..lineTo(0, size.height * 0.85)
-      ..cubicTo(
-        size.width * 0.35,
-        size.height * 1.05,
-        size.width * 0.65,
-        size.height * 0.75,
+    final paint = Paint()..color = const Color(0xFF002147);
+
+    final path = Path()
+      ..moveTo(0, 0)
+      ..lineTo(0, baseY)
+      ..quadraticBezierTo(
+        size.width / 2,
+        baseY - curveHeight,
         size.width,
-        size.height * 0.90,
+        baseY,
       )
       ..lineTo(size.width, 0)
       ..close();

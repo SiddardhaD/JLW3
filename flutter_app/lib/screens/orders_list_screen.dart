@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/order.dart';
 
+const _kPrimaryBlue = Color(0xFF002147);
+const _kPrimaryGreen = Color(0xFF16A34D);
+
 class OrdersListScreen extends StatefulWidget {
   final List<ProcurementOrder> orders;
   final VoidCallback onLogout;
@@ -25,8 +28,11 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
     return widget.orders.where((order) {
       final matchesCategory = _selectedCategory == "All" ||
           (_selectedCategory == "High Value" && order.amount >= 1000000.0) ||
-          (_selectedCategory == "Today" && (order.orderDate.contains("11 Jun") || order.orderNo == "2323137")) ||
-          (_selectedCategory == "Pending" && order.status == OrderApprovalStatus.pending);
+          (_selectedCategory == "Today" &&
+              (order.orderDate.contains("11 Jun") ||
+                  order.orderNo == "2323137")) ||
+          (_selectedCategory == "Pending" &&
+              order.status == OrderApprovalStatus.pending);
 
       final query = _searchQuery.toLowerCase().trim();
       final matchesQuery = query.isEmpty ||
@@ -44,107 +50,66 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
       backgroundColor: const Color(0xFFF6F8FB),
       body: Column(
         children: [
-          // App Header
+          // AppBar
           Container(
-            color: const Color(0xFF021733),
-            padding: const EdgeInsets.only(top: 54, bottom: 20),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
+            color: _kPrimaryBlue,
+            padding: const EdgeInsets.only(top: 54, bottom: 16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.menu, color: Colors.white),
+                    onPressed: () {},
+                  ),
+                  const Expanded(
+                    child: Text(
+                      "Orders Awaiting Approval",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Stack(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.white),
+                        icon: const Icon(Icons.notifications_outlined,
+                            color: Colors.white),
                         onPressed: () {},
                       ),
-                      const Expanded(
-                        child: Text(
-                          "Orders Awaiting Approval",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFE53935),
+                            shape: BoxShape.circle,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Stack(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-                            onPressed: () {},
-                          ),
-                          Positioned(
-                            top: 10,
-                            right: 10,
-                            child: Container(
-                              width: 9,
-                              height: 9,
-                              decoration: const BoxDecoration(
-                                color: Colors.orange,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close, color: Colors.white),
-                        onPressed: widget.onLogout,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 26),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              "APPROVER ID",
-                              style: TextStyle(color: Color(0xCC64748B), fontSize: 11, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 2),
-                            Text(
-                              "1234567",
-                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              "PROJECT",
-                              style: TextStyle(color: Color(0xCC64748B), fontSize: 11, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 2),
-                            Text(
-                              "M30",
-                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                            )
-                          ],
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    onPressed: widget.onLogout,
+                  ),
+                ],
+              ),
             ),
           ),
 
-          // Search and Filters
+          // Approver info card + search/filters
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Column(
               children: [
+                _buildApproverInfoCard(),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
@@ -156,11 +121,14 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                           border: Border.all(color: const Color(0xFFE2E8F0)),
                         ),
                         child: TextField(
-                          onChanged: (value) => setState(() => _searchQuery = value),
+                          onChanged: (value) =>
+                              setState(() => _searchQuery = value),
                           decoration: const InputDecoration(
                             hintText: "Search by Order No., Supplier...",
-                            hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                            prefixIcon: Icon(Icons.search, color: Color(0xFF64748B)),
+                            hintStyle:
+                                TextStyle(color: Colors.grey, fontSize: 14),
+                            prefixIcon:
+                                Icon(Icons.search, color: Color(0xFF64748B)),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(vertical: 14),
                           ),
@@ -172,11 +140,12 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                       width: 52,
                       height: 52,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF021733),
+                        color: _kPrimaryBlue,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.filter_list, color: Colors.white),
+                        icon:
+                            const Icon(Icons.filter_list, color: Colors.white),
                         onPressed: () {},
                       ),
                     )
@@ -189,24 +158,31 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                   height: 38,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: ["All", "High Value", "Today", "Pending"].map((category) {
+                    children: ["All", "High Value", "Today", "Pending"]
+                        .map((category) {
                       final isSelected = _selectedCategory == category;
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: GestureDetector(
-                          onTap: () => setState(() => _selectedCategory = category),
+                          onTap: () =>
+                              setState(() => _selectedCategory = category),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 18, vertical: 8),
                             decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF021733) : Colors.white,
+                              color: isSelected ? _kPrimaryBlue : Colors.white,
                               borderRadius: BorderRadius.circular(20),
-                              border: isSelected ? null : Border.all(color: const Color(0xFFE2E8F0)),
+                              border: isSelected
+                                  ? null
+                                  : Border.all(color: const Color(0xFFE2E8F0)),
                             ),
                             child: Center(
                               child: Text(
                                 category,
                                 style: TextStyle(
-                                  color: isSelected ? Colors.white : const Color(0xFF64748B),
+                                  color: isSelected
+                                      ? Colors.white
+                                      : const Color(0xFF64748B),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
                                 ),
@@ -223,6 +199,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
           ),
 
           // Scrollable Orders List
+          const SizedBox(height: 10),
           Expanded(
             child: _filteredOrders.isEmpty
                 ? const Center(
@@ -245,18 +222,102 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
     );
   }
 
+  Widget _buildApproverInfoCard() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0A000000),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    "APPROVER ID",
+                    style: TextStyle(
+                      color: Color(0xFF94A3B8),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "1234567",
+                    style: TextStyle(
+                      color: _kPrimaryBlue,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const VerticalDivider(
+              color: Color(0xFFE2E8F0),
+              thickness: 1,
+              width: 32,
+              indent: 4,
+              endIndent: 4,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "PROJECT",
+                      style: TextStyle(
+                        color: Color(0xFF94A3B8),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      "M30",
+                      style: TextStyle(
+                        color: _kPrimaryBlue,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildOrderCardItem(ProcurementOrder order) {
-    final Color badgeColor = order.status == OrderApprovalStatus.approved
-        ? const Color(0xFF1CB55C)
-        : (order.status == OrderApprovalStatus.rejected
-            ? const Color(0xFFE53935)
-            : (order.orderNo == "2323135" ? const Color(0xFF1E3A5F) : const Color(0xFF1CB55C)));
+    final Color iconColor =
+        order.orderNo == "2323135" ? _kPrimaryBlue : _kPrimaryGreen;
 
     return Card(
       color: Colors.white,
-      shadowColor: const Color(0x33000000),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shadowColor: const Color(0x1A000000),
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFFE2E8F0)),
+      ),
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -270,15 +331,21 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                   Container(
                     width: 44,
                     height: 44,
-                    decoration: BoxDecoration(color: badgeColor, shape: BoxShape.circle),
-                    child: const Icon(Icons.description_outlined, color: Colors.white, size: 20),
+                    decoration: BoxDecoration(
+                      color: iconColor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.description_outlined,
+                        color: Colors.white, size: 20),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Order No.", style: TextStyle(color: Color(0xFF64748B), fontSize: 10)),
+                        const Text("Order No.",
+                            style: TextStyle(
+                                color: Color(0xFF64748B), fontSize: 10)),
                         Text(
                           order.orderNo,
                           style: const TextStyle(
@@ -293,10 +360,15 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const Text("Amount", style: TextStyle(color: Color(0xFF64748B), fontSize: 10)),
+                      const Text("Amount",
+                          style: TextStyle(
+                              color: Color(0xFF64748B), fontSize: 10)),
                       Text(
                         "${order.formattedAmount} ${order.currency}",
-                        style: TextStyle(color: badgeColor, fontSize: 15, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            color: _kPrimaryGreen,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
                       ),
                     ],
                   )
@@ -305,11 +377,14 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
               const SizedBox(height: 14),
 
               // Details Grid
-              _buildGridRow("Originator", order.originator, "Order Type", order.orderType),
+              _buildGridRow("Originator", order.originator, "Order Type",
+                  order.orderType),
               const SizedBox(height: 8),
-              _buildGridRow("CO", order.companyCode, "Order Date", order.orderDate),
+              _buildGridRow(
+                  "CO", order.companyCode, "Order Date", order.orderDate),
               const SizedBox(height: 8),
-              _buildGridRow("Responsible", order.responsible, "Supplier", order.supplier),
+              _buildGridRow(
+                  "Responsible", order.responsible, "Supplier", order.supplier),
 
               const SizedBox(height: 14),
               const Divider(color: Color(0xFFE2E8F0), height: 1),
@@ -317,21 +392,24 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
 
               Row(
                 children: [
-                  const Icon(Icons.calendar_today_outlined, color: Color(0xFF64748B), size: 14),
+                  const Icon(Icons.calendar_today_outlined,
+                      color: Color(0xFF64748B), size: 14),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       order.orderDate,
-                      style: const TextStyle(color: Color(0xFF64748B), fontSize: 11),
+                      style: const TextStyle(
+                          color: Color(0xFF64748B), fontSize: 11),
                     ),
                   ),
                   if (order.status != OrderApprovalStatus.pending)
                     Container(
                       margin: const EdgeInsets.only(right: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
                         color: order.status == OrderApprovalStatus.approved
-                            ? const Color(0xFF1CB55C).withOpacity(0.12)
+                            ? _kPrimaryGreen.withOpacity(0.12)
                             : const Color(0xFFE53935).withOpacity(0.12),
                         borderRadius: BorderRadius.circular(4),
                       ),
@@ -339,14 +417,15 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                         order.status.name.toUpperCase(),
                         style: TextStyle(
                           color: order.status == OrderApprovalStatus.approved
-                              ? const Color(0xFF1CB55C)
+                              ? _kPrimaryGreen
                               : const Color(0xFFE53935),
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  const Icon(Icons.arrow_right_alt_outlined, color: Color(0xFF64748B), size: 16),
+                  const Icon(Icons.chevron_right,
+                      color: Color(0xFF94A3B8), size: 20),
                 ],
               )
             ],
@@ -363,10 +442,15 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label1, style: const TextStyle(color: Color(0xFF64748B), fontSize: 11)),
+              Text(label1,
+                  style:
+                      const TextStyle(color: Color(0xFF64748B), fontSize: 11)),
               Text(
                 val1,
-                style: const TextStyle(color: Color(0xFF0F172A), fontSize: 13, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: Color(0xFF0F172A),
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -377,10 +461,15 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label2, style: const TextStyle(color: Color(0xFF64748B), fontSize: 11)),
+              Text(label2,
+                  style:
+                      const TextStyle(color: Color(0xFF64748B), fontSize: 11)),
               Text(
                 val2,
-                style: const TextStyle(color: Color(0xFF0F172A), fontSize: 13, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: Color(0xFF0F172A),
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

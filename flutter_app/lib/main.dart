@@ -58,6 +58,7 @@ class _MainRouterScreenState extends State<MainRouterScreen> {
   void _resetOrders() {
     _ordersList = [
       ProcurementOrder(
+        currency: "AED",
         orderNo: "2323135",
         companyCode: "00200",
         supplier: "James O'Malley",
@@ -90,6 +91,7 @@ class _MainRouterScreenState extends State<MainRouterScreen> {
         ],
       ),
       ProcurementOrder(
+        currency: "AED",
         orderNo: "2323136",
         companyCode: "00200",
         supplier: "James O'Malley",
@@ -113,6 +115,7 @@ class _MainRouterScreenState extends State<MainRouterScreen> {
         ],
       ),
       ProcurementOrder(
+        currency: "AED",
         orderNo: "2323137",
         companyCode: "00100",
         supplier: "Global Components Corp",
@@ -128,10 +131,10 @@ class _MainRouterScreenState extends State<MainRouterScreen> {
             number: 1,
             itemCode: "500",
             description: "Secure communications payload hardware config",
-            requestedDate = "11-06-2026",
             quantity: "2 Units",
             unitCost: 225000.0,
             extendedCost: 450000.0,
+            requestedDate: '11-06-2026',
           )
         ],
       )
@@ -163,8 +166,11 @@ class _MainRouterScreenState extends State<MainRouterScreen> {
     setState(() {
       _ordersList = _ordersList.map((o) {
         if (o.orderNo == orderNo) {
-          final approvedLines = o.lines.map((l) => l.copyWith(status: OrderApprovalStatus.approved)).toList();
-          return o.copyWith(status: OrderApprovalStatus.approved, lines: approvedLines);
+          final approvedLines = o.lines
+              .map((l) => l.copyWith(status: OrderApprovalStatus.approved))
+              .toList();
+          return o.copyWith(
+              status: OrderApprovalStatus.approved, lines: approvedLines);
         }
         return o;
       }).toList();
@@ -173,7 +179,7 @@ class _MainRouterScreenState extends State<MainRouterScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Order $orderNo Approved successfully!"),
-        backgroundColor: const Color(0xFF1CB55C),
+        backgroundColor: const Color(0xFF16A34D),
       ),
     );
   }
@@ -182,8 +188,11 @@ class _MainRouterScreenState extends State<MainRouterScreen> {
     setState(() {
       _ordersList = _ordersList.map((o) {
         if (o.orderNo == orderNo) {
-          final rejectedLines = o.lines.map((l) => l.copyWith(status: OrderApprovalStatus.rejected)).toList();
-          return o.copyWith(status: OrderApprovalStatus.rejected, lines: rejectedLines);
+          final rejectedLines = o.lines
+              .map((l) => l.copyWith(status: OrderApprovalStatus.rejected))
+              .toList();
+          return o.copyWith(
+              status: OrderApprovalStatus.rejected, lines: rejectedLines);
         }
         return o;
       }).toList();
@@ -193,66 +202,6 @@ class _MainRouterScreenState extends State<MainRouterScreen> {
       SnackBar(
         content: Text("Order $orderNo Rejected!"),
         backgroundColor: const Color(0xFFE53935),
-      ),
-    );
-  }
-
-  void _handleApproveLine(String orderNo, int lineNo) {
-    setState(() {
-      _ordersList = _ordersList.map((o) {
-        if (o.orderNo == orderNo) {
-          final updatedLines = o.lines.map((l) {
-            if (l.number == lineNo) {
-              return l.copyWith(status: OrderApprovalStatus.approved);
-            }
-            return l;
-          }).toList();
-
-          final allApproved = updatedLines.every((l) => l.status == OrderApprovalStatus.approved);
-          final anyRejected = updatedLines.any((l) => l.status == OrderApprovalStatus.rejected);
-          final statusResult = allApproved
-              ? OrderApprovalStatus.approved
-              : (anyRejected ? OrderApprovalStatus.rejected : OrderApprovalStatus.pending);
-
-          return o.copyWith(status: statusResult, lines: updatedLines);
-        }
-        return o;
-      }).toList();
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Line item approved successfully!"),
-        backgroundColor: Color(0xFF1CB55C),
-      ),
-    );
-  }
-
-  void _handleRejectLine(String orderNo, int lineNo) {
-    setState(() {
-      _ordersList = _ordersList.map((o) {
-        if (o.orderNo == orderNo) {
-          final updatedLines = o.lines.map((l) {
-            if (l.number == lineNo) {
-              return l.copyWith(status: OrderApprovalStatus.rejected);
-            }
-            return l;
-          }).toList();
-
-          final allApproved = updatedLines.every((l) => l.status == OrderApprovalStatus.approved);
-          final anyRejected = updatedLines.any((l) => l.status == OrderApprovalStatus.rejected);
-          final statusResult = allApproved
-              ? OrderApprovalStatus.approved
-              : (anyRejected ? OrderApprovalStatus.rejected : OrderApprovalStatus.pending);
-
-          return o.copyWith(status: statusResult, lines: updatedLines);
-        }
-        return o;
-      }).toList();
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Line item rejected successfully."),
-        backgroundColor: Color(0xFFE53935),
       ),
     );
   }
@@ -269,14 +218,30 @@ class _MainRouterScreenState extends State<MainRouterScreen> {
           onSelectOrder: _handleSelectOrder,
         );
       case AppActiveScreen.orderDetails:
-        final order = _ordersList.firstWhere((o) => o.orderNo == _selectedOrderNo);
+        final selectedNo = _selectedOrderNo;
+        if (selectedNo == null) {
+          return OrdersListScreen(
+            orders: _ordersList,
+            onLogout: _handleLogout,
+            onSelectOrder: _handleSelectOrder,
+          );
+        }
+        final orderIndex =
+            _ordersList.indexWhere((o) => o.orderNo == selectedNo);
+        if (orderIndex == -1) {
+          return OrdersListScreen(
+            orders: _ordersList,
+            onLogout: _handleLogout,
+            onSelectOrder: _handleSelectOrder,
+          );
+        }
+        final order = _ordersList[orderIndex];
         return OrderDetailsScreen(
           order: order,
-          onBack: () => setState(() => _activeScreen = AppActiveScreen.ordersList),
+          onBack: () =>
+              setState(() => _activeScreen = AppActiveScreen.ordersList),
           onApproveOrder: _handleApproveOrder,
           onRejectOrder: _handleRejectOrder,
-          onApproveLine: _handleApproveLine,
-          onRejectLine: _handleRejectLine,
         );
     }
   }
