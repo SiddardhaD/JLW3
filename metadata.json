@@ -1,0 +1,6 @@
+{
+  "name": "Order Approvals",
+  "description": "Premium multi-screen procurement order workflow containing a login dashboard, quick-filter order queues, detailed specification views, and modal-driven action verification dialogs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
